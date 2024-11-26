@@ -1,7 +1,7 @@
 
 # Receipt Processor
 
-The **Receipt Processor** is a Go-based application designed to process receipts, calculate points based on specific criteria, and provide APIs to retrieve receipt details and health status. The application includes backend validation to ensure data integrity and prevents duplicate processing of receipts.
+**Receipt Processor** is a Go-based application designed to process receipts, calculate points based on specific criteria, and provide APIs to retrieve receipt details and system's overall health status. This application includes backend validation to ensure data integrity and prevents duplicate processing of receipts.
 
 ---
 
@@ -102,7 +102,7 @@ docker build -t receipt-processor .
 Run the Docker Container:
 
 ```bash
-docker run -p 8080:8080 --env-file .env receipt-processor
+docker run -p 8080:8080 receipt-processor
 ```
 
 Access APIs:
@@ -168,7 +168,7 @@ GET /receipts/{id}/points?detailed=true
 
 ```json
 {
-  "points": 100
+  "points": 21
 }
 ```
 
@@ -176,11 +176,8 @@ GET /receipts/{id}/points?detailed=true
 
 ```json
 {
-  "points": 100,
-  "explanation": "Breakdown:
-50 points - total is a round dollar amount
-25 points - total is a multiple of 0.25
-..."
+  "explanation": "Breakdown:\n6 points - retailer name has 6 alphanumeric characters\n5 points - 2 items (2 pairs @ 5 points each)\n10 points - time of purchase is between 2:00pm and 4:00pm\n  + ---------\n  = 21 points",
+  "points": 21
 }
 ```
 
@@ -264,10 +261,16 @@ To prevent duplicate receipt processing, the application uses hashing:
 
 ## Testing
 
-To run the tests:
+To run the Unit tests for each functionality please go run following command:
 
 ```bash
-go test ./...
+go test ./internal/<folder-name>
+```
+
+Example:
+```bash
+go test ./internal/handler
+go test ./internal/services
 ```
 
 ---
@@ -290,12 +293,13 @@ Logs are configured using logrus and are written to both `app.log` and the conso
 ### Local Deployment
 
 - Ensure `go` is installed.
+- Go to cmd folder in the project to locate the main.go file `cd cmd`.
 - Run `go run main.go` to start the application.
 
 ### Docker Deployment
 
 - Build the Docker image: `docker build -t receipt-processor .`
-- Run the container: `docker run -p 8080:8080 --env-file .env receipt-processor`
+- Run the container: `docker run -p 8080:8080 receipt-processor`
 
 ---
 
